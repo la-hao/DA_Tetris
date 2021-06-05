@@ -9,7 +9,7 @@ function App() {
     async function getData() {
       try {
 
-        const response = await fetch("http://localhost:3001/api");
+        const response = await fetch("/api");
         const data = await response.json();
         setData(data.message);
 

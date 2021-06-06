@@ -1,7 +1,13 @@
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
-const userService = require('./model/userService');
+const bodyParser = require('body-parser');
+
+const userService = require('./services/user.service');
+
+const userRouter = require('./routes/user.route');
+const rankBoardRouter = require('./routes/rank-board.route');
+
 const db = require('./db.js');
 
 const PORT = process.env.PORT || 3001;
@@ -24,6 +30,9 @@ app.get("/api", (req, res) => {
     const data = { message: "Hello from Server" };
     res.json(data);
 })
+
+app.use('/user', userRouter);
+// app.use('/rank-board', rankBoardRouter);
 
 app.get("/accounts", async (req, res) => {
     try {

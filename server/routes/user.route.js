@@ -1,8 +1,8 @@
 const router = require('express').Router();
 const userModel = require('../models/user.model');
 const historyModel = require('../models/history.model');
-const userController = require('../controllers/user.controller');
-
+const userService = require('../services/user.service');
+const rankService = require('../services/rank.service');
 const helpers = require('../helpers');
 
 router.route('/').get(async (req, res) => {
@@ -34,7 +34,7 @@ router.route('/add').post(async (req, res) => {
         const password = req.body.password;
 
         //Ton tai username
-        if (userController.checkExistUsername(username) == true) {
+        if (userService.checkExistUsername(username) == true) {
             res.status(400).json(false);
         }
         else {
@@ -51,7 +51,7 @@ router.route('/add').post(async (req, res) => {
         res.status(500).json(false);
     }
 })
-router.route('/history/:id').get(async (req, res) => {
+router.route('/:id/history').get(async (req, res) => {
     try {
         const id = req.params.id;
         const data = await userModel.findOne({ _id: id });
@@ -63,16 +63,25 @@ router.route('/history/:id').get(async (req, res) => {
     }
 });
 
-router.route('/history/add').post(async (req, res) => {
+router.route('/:id/history/add').post(async (req, res) => {
     try {
-        const userId = req.body.userId;
+        const userId = req.params.id;
         const score = req.body.score;
         const time = helpers.getDateTime();
         const user = await userModel.findOne({ _id: userId });
+
         if (user) {
+
             if (score > user.highestScore) {
                 user.highestScore = score;
-                // rankBoardController.update({})
+                const abledToUpdateRank = await rankService.abledToUpdateRank(score);
+                if (abledToUpdateRank) {//Cap nhat BXH
+                    await rankService.updateRankBoard(user);
+                }
+                else {
+                    //do nothing
+                }
+
             }
 
             const newHistory = {
@@ -88,6 +97,7 @@ router.route('/history/add').post(async (req, res) => {
         else {
             res.status(400).json(false);
         }
+
     } catch (error) {
         console.log(error);
         res.status(400).json(false);

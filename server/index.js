@@ -3,8 +3,6 @@ const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 
-const userService = require('./services/user.service');
-
 const userRouter = require('./routes/user.route');
 const rankBoardRouter = require('./routes/rank-board.route');
 
@@ -32,18 +30,8 @@ app.get("/api", (req, res) => {
 })
 
 app.use('/user', userRouter);
-// app.use('/rank-board', rankBoardRouter);
+app.use('/rank-board', rankBoardRouter);
 
-app.get("/accounts", async (req, res) => {
-    try {
-        const data = await userService.getAll();
-        console.log('list: ', data);
-        res.status(200).json(data);
-    } catch (error) {
-        console.log("error to get items", error);
-    }
-
-})
 
 //All other GET requests not handled before will return ReactApp
 app.get('/*', (req, res) => {

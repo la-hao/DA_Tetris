@@ -3,7 +3,7 @@ require('dotenv').config();
 const URI = process.env.DB_URI;
 
 const mongoose = require('mongoose');
-
+mongoose.set('useFindAndModify', false);
 module.exports.connectMongoose = async () => {
     try {
         // Connect to the MongoDB cluster

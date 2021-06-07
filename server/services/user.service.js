@@ -1,5 +1,9 @@
 const userModel = require('../models/user.model');
+exports.checkExistUsername = async (username) => {
+    const data = await userModel.find({ username });
 
-module.exports.getAll = () => {
-    return userModel.find({});
+    if (data == []) {
+        return false;
+    }
+    return true;
 }

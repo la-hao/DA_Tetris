@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
 const { Schema } = mongoose;
 mongoose.set('useCreateIndex', true);
+
 const users = new Schema(
     {
         username: {
@@ -15,9 +16,7 @@ const users = new Schema(
             required: true
         },
         highestScore: Number,
-        histories: Array
     },
-
 );
 
 module.exports = mongoose.model("users", users);

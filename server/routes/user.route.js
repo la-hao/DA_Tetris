@@ -1,20 +1,22 @@
 const router = require('express').Router();
+const bcrypt = require('bcrypt');
+
 const userModel = require('../models/user.model');
 const historyModel = require('../models/history.model');
 const userService = require('../services/user.service');
 const rankService = require('../services/rank.service');
 const helpers = require('../helpers');
 
-router.route('/').get(async (req, res) => {
-    try {
-        const users = await userModel.find({});
-        res.json(users);
+// router.route('/').get(async (req, res) => {
+//     try {
+//         const users = await userModel.find({});
+//         res.json(users);
 
-    } catch (error) {
-        console.log(error);
-        res.status(404).json("Not found");
-    }
-})
+//     } catch (error) {
+//         console.log(error);
+//         res.status(404).json("Not found");
+//     }
+// })
 
 router.route('/:id').get(async (req, res) => {
     try {
@@ -28,38 +30,53 @@ router.route('/:id').get(async (req, res) => {
     }
 });
 
-router.route('/add').post(async (req, res) => {
+//Dang ky tai khoan
+router.route('/signup').post(async (req, res) => {
     try {
         const username = req.body.username;
         const password = req.body.password;
 
         //Ton tai username
-        if (userService.checkExistUsername(username) == true) {
-            res.status(400).json(false);
-        }
-        else {
+        const existUsername = await userService.checkExistUsername(username);
+
+        if (existUsername) {
+            res.status(400).send({ message: "Username is being used" });
+        } else {
+            //Hash password
+            const saltRounds = 10;
+            const hash = bcrypt.hashSync(password, saltRounds);
+
             const newUser = {
                 username,
-                password,//Can Hash
+                password: hash,
                 highestScore: 0,
-                histories: []
             }
+
             await userModel(newUser).save();//Them vao database
-            res.json(true);
+            res.send({ message: "Register new account successfully!" });
         }
     } catch (error) {
-        res.status(500).json(false);
+        console.log(error);
+        res.status(500).send({ message: "Error in server" });
     }
 })
+
+//Lich su nguoi choi
 router.route('/:id/history').get(async (req, res) => {
     try {
         const id = req.params.id;
-        const data = await userModel.findOne({ _id: id });
-        const his = data.histories;
-        res.json(his);
+        const data = await historyModel.findOne({ userId: id });
+
+        if (data) {
+            const his = data.histories;
+            res.send(his);
+        }
+        else {
+            res.status(401).send({ message: "No history!" });
+        }
     } catch (error) {
         console.log(error);
-        res.json(false);
+        res.status(500).send({ message: "Error in server" });
     }
 });
 
@@ -70,37 +87,55 @@ router.route('/:id/history/add').post(async (req, res) => {
         const time = helpers.getDateTime();
         const user = await userModel.findOne({ _id: userId });
 
-        if (user) {
 
+        if (user) {
+            //Xem xet cap nhat BXH
             if (score > user.highestScore) {
+                //Cap nhat highest score vao database
                 user.highestScore = score;
+                await user.save();
+
                 const abledToUpdateRank = await rankService.abledToUpdateRank(score);
+
                 if (abledToUpdateRank) {//Cap nhat BXH
                     await rankService.updateRankBoard(user);
-                }
-                else {
+                } else {
                     //do nothing
                 }
-
             }
 
             const newHistory = {
                 time,
                 score
             };
+            const userHistories = await historyModel.findOne({ userId: userId });
 
-            await user.histories.push(newHistory);
-            user.save();
+            if (userHistories) {//Da ton tai Lich su trong bang lich su
+                await userHistories.histories.push(newHistory);
+                userHistories.save();
+            } else {//Nguoi choi chua co lich su trong bang Lich su => Them moi
+                const newUserHistory = {
+                    username: user.username,
+                    userId: user._id,
+                    histories: [newHistory],
+                }
+                await historyModel(newUserHistory).save();
+            }
 
-            res.json(true);
-        }
-        else {
-            res.status(400).json(false);
+            res.send({ message: "Add new history successfully!" });
+
+        } else {//Khong ton tai user
+            res.status(404).send({ message: "User not found" });
         }
 
     } catch (error) {
         console.log(error);
-        res.status(400).json(false);
+
+        if (req.params.id.length != 24) {//Khong dung do dai Id cua Mongoose
+            res.status(404).send({ message: "User not found" });
+        } else {
+            res.status(500).send({ message: "Error in server" });
+        }
     }
 })
 

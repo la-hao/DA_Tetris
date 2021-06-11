@@ -59,6 +59,37 @@ router.route('/signup').post(async (req, res) => {
         console.log(error);
         res.status(500).send({ message: "Error in server" });
     }
+});
+
+//Dang nhap
+router.route('/signin').post(async (req, res) => {
+    try {
+        const username = req.body.username || '';
+        const password = req.body.password || '';
+
+        const user = await userModel.findOne({ username: username });
+
+        if (user) {
+            const hash = user.password;
+            const result = bcrypt.compareSync(password, hash);
+
+            if (result == true) {
+                const response = {
+                    username: user.username,
+                    _id: user._id,
+                    token: ''// Lam sau
+                }
+                res.send(response);
+            } else {
+                res.status(401).send({ message: "Password is incorrect" });
+            }
+        } else {
+            res.status(401).send({ message: "Invalid username" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Error in server" });
+    }
 })
 
 //Lich su nguoi choi

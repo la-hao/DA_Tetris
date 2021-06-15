@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { createStage, checkCollision } from '../gameHelpers';
 import { StyledTetrisWrapper, StyledTetris } from './styles/StyledTetris';
@@ -14,17 +14,41 @@ import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
 import CollectionsPage from './CollectionsPage';
+import OptionPage from './OptionPage';
+
 const Tetris = () => {
+  const localStageWidth = parseInt(localStorage.getItem('stageWidth')) || 12;
+  const localStageHeight = parseInt(localStorage.getItem('stageHeight')) || 20;
+  const [stageWidth, setstageWidth] = useState(localStageWidth);
+  const [stageHeight, setstageHeight] = useState(localStageHeight);
+
   const [dropTime, setDropTime] = useState(null);
   const [gameOver, setGameOver] = useState(false);
 
-  const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer();
-  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer);
+  const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(stageWidth);
+  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
   const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(
     rowsCleared
   );
-
+  const [isFirsttime, setIsFirsttime] = useState(true);
   console.log('re-render');
+  useEffect(() => {
+    if (isFirsttime) {
+      setIsFirsttime(false);
+    }
+    else {
+      startGame();
+    }
+  }, [stageWidth, stageHeight]);
+
+  //Change Size Stage
+  const changeStageSize = (width, height) => {
+    setstageWidth(width);
+    setstageHeight(height);
+
+    localStorage.setItem('stageWidth', width);
+    localStorage.setItem('stageHeight', height);
+  }
 
   const movePlayer = dir => {
     if (!checkCollision(player, stage, { x: dir, y: 0 })) {
@@ -41,9 +65,10 @@ const Tetris = () => {
     }
   };
 
+
   const startGame = () => {
     // Reset everything
-    setStage(createStage());
+    setStage(createStage(stageWidth, stageHeight));
     setDropTime(1000);
     resetPlayer();
     setScore(0);
@@ -120,7 +145,8 @@ const Tetris = () => {
             </div>
           )}
           <StartButton callback={startGame} />
-          <CollectionsPage />
+          {/* <CollectionsPage /> */}
+          <OptionPage stageWidth={stageWidth} stageHeight={stageHeight} onOK={changeStageSize} />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>

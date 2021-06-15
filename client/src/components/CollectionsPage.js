@@ -5,13 +5,6 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import { Button, Modal, Form, Input, Alert, message } from 'antd';
 import "antd/dist/antd.css";
 
-const tailLayout = {
-    wrapperCol: {
-        offset: 8,
-        span: 16,
-    },
-};
-
 const CollectionCreateForm = ({ visible, onCreate, onCancel, message, isLogin }) => {
     const [form] = Form.useForm();
     const displayMessage = message ? "block" : "none";

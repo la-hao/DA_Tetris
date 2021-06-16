@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-import { createStage, checkCollision } from '../gameHelpers';
+import { createStage, checkCollision, basicHardLevelList, getHardLevelById } from '../gameHelpers';
 import { StyledTetrisWrapper, StyledTetris } from './styles/StyledTetris';
 
 // Custom Hooks
@@ -27,11 +27,21 @@ const Tetris = () => {
 
   const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(stageWidth);
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
-  const [score, setScore, rows, setRows, level, setLevel] = useGameStatus(
-    rowsCleared
-  );
+
   const [isFirsttime, setIsFirsttime] = useState(true);
+
+  const localPresentHardLevel = localStorage.getItem('presentHardLevel') ?
+    JSON.parse(localStorage.getItem('presentHardLevel')) : basicHardLevelList[0];
+  const [presentHardLevel, setPresentHardLevel] = useState(localPresentHardLevel);
+
+  const localCustomHardLevelList = localStorage.getItem('customHardLevelList') ?
+    JSON.parse(localStorage.getItem('customHardLevelList')) : [];
+  const [customHardLevelList, setCustomHardLevelList] = useState(localCustomHardLevelList);
+
+  const [score, setScore, level, setLevel] = useGameStatus(
+    rowsCleared, presentHardLevel);
   console.log('re-render');
+
   useEffect(() => {
     if (isFirsttime) {
       setIsFirsttime(false);
@@ -39,15 +49,28 @@ const Tetris = () => {
     else {
       startGame();
     }
-  }, [stageWidth, stageHeight]);
+  }, [stageWidth, stageHeight, presentHardLevel, setPresentHardLevel, customHardLevelList, setCustomHardLevelList]);
 
   //Change Size Stage
-  const changeStageSize = (width, height) => {
+  const changeOptions = async (width, height, hardLevelId, newCustomHardLevelList) => {
     setstageWidth(width);
     setstageHeight(height);
 
     localStorage.setItem('stageWidth', width);
     localStorage.setItem('stageHeight', height);
+
+    if (newCustomHardLevelList) {
+      setCustomHardLevelList(newCustomHardLevelList);
+      localStorage.setItem('customHardLevelList', JSON.stringify(newCustomHardLevelList));
+    }
+
+    const hardLevel = await getHardLevelById(hardLevelId, newCustomHardLevelList, basicHardLevelList);
+    if (hardLevel) {
+      localStorage.setItem('presentHardLevel', JSON.stringify(hardLevel));
+      setPresentHardLevel(hardLevel);
+    }
+
+    console.log("hard:", hardLevel);
   }
 
   const movePlayer = dir => {
@@ -56,33 +79,32 @@ const Tetris = () => {
     }
   };
 
-  const keyUp = ({ keyCode }) => {
-    if (!gameOver) {
-      // Activate the interval again when user releases down arrow.
-      if (keyCode === 40) {
-        setDropTime(1000 / (level + 1));
-      }
-    }
-  };
+  // const keyUp = ({ keyCode }) => {
+  //   if (!gameOver) {
+  //     // Activate the interval again when user releases down arrow.
+  //     if (keyCode === 40) {
+  //       setDropTime(1000 / (level + 1));
+  //     }
+  //   }
+  // };
 
 
   const startGame = () => {
     // Reset everything
     setStage(createStage(stageWidth, stageHeight));
-    setDropTime(1000);
+    setDropTime(presentHardLevel.baseSpeed);
     resetPlayer();
     setScore(0);
     setLevel(0);
-    setRows(0);
     setGameOver(false);
   };
 
   const drop = () => {
     // Increase level when player has cleared 10 rows
-    if (rows > (level + 1) * 10) {
+    if (score >= presentHardLevel.linePoints[level] && level < presentHardLevel.linePoints.length) {
       setLevel(prev => prev + 1);
       // Also increase speed
-      setDropTime(1000 / (level + 1) + 200);
+      setDropTime(presentHardLevel.baseSpeed * Math.pow(presentHardLevel.upSpeed, level));
     }
 
     if (!checkCollision(player, stage, { x: 0, y: 1 })) {
@@ -101,7 +123,7 @@ const Tetris = () => {
   const dropPlayer = () => {
     // We don't need to run the interval when we use the arrow down to
     // move the tetromino downwards. So deactivate it for now.
-    setDropTime(null);
+    //setDropTime(null);
     drop();
   };
 
@@ -130,7 +152,7 @@ const Tetris = () => {
       role="button"
       tabIndex="0"
       onKeyDown={e => move(e)}
-      onKeyUp={keyUp}
+    //onKeyUp={keyUp}
     >
       <StyledTetris>
         <Stage stage={stage} />
@@ -139,14 +161,17 @@ const Tetris = () => {
             <Display gameOver={gameOver} text="Game Over" />
           ) : (
             <div>
+              <Display text={`Target: ${presentHardLevel.target}`} />
               <Display text={`Score: ${score}`} />
-              <Display text={`rows: ${rows}`} />
-              <Display text={`Level: ${level}`} />
+              <Display text={`Level: ${level + 1}`} />
             </div>
           )}
           <StartButton callback={startGame} />
           {/* <CollectionsPage /> */}
-          <OptionPage stageWidth={stageWidth} stageHeight={stageHeight} onOK={changeStageSize} />
+          <OptionPage stageWidth={stageWidth} stageHeight={stageHeight} onOK={changeOptions}
+            basicHardLevelList={basicHardLevelList} presentHardLevel={presentHardLevel}
+            customHardLevelList={customHardLevelList}
+          />
         </aside>
       </StyledTetris>
     </StyledTetrisWrapper>

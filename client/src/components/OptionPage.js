@@ -1,22 +1,26 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Row, Slider, Col } from 'antd';
+import { Modal, Button, Row, Slider, Col, Select } from 'antd';
+import CustomPage from './CustomPage';
+const { Option, OptGroup } = Select;
 
 const OptionPage = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [width, setWidth] = useState(props.stageWidth);
     const [height, setHeight] = useState(props.stageHeight);
+    const [presentHardLevel, setPresentHardLevel] = useState(props.presentHardLevel);
+    const [presentHardLevelId, setPresentHardLevelId] = useState(props.presentHardLevel.id);
+    const [customHardLevelList, setCustomHardLevelList] = useState(props.customHardLevelList);
 
     useEffect(() => {
-        setWidth(props.stageWidth);
-        setHeight(props.stageHeight);
-    }, [isModalVisible, setIsModalVisible, props.stageHeight, props.stageWidth])
 
+    });
     const showModal = () => {
         setIsModalVisible(true);
     };
 
     const handleOk = () => {
-        props.onOK(width, height);
+        localStorage.setItem('presentHardLevel', JSON.stringify(customHardLevelList));
+        props.onOK(width, height, presentHardLevelId, customHardLevelList);
         setIsModalVisible(false);
     };
 
@@ -32,6 +36,15 @@ const OptionPage = (props) => {
 
     function onAfterChangeHeight(value) {
         setHeight(value);
+    }
+
+    function handleChangeHardLevel(value) {
+        setPresentHardLevelId(value);
+    }
+
+    function onSaveCustomHardLevel(value) {
+        setCustomHardLevelList(value);
+        setPresentHardLevelId(value.id);
     }
 
     return (
@@ -54,6 +67,35 @@ const OptionPage = (props) => {
                     </Col>
                     <Col span={12}>
                         <Slider defaultValue={height} onAfterChange={onAfterChangeHeight} min={width} max={30} step={2} />
+                    </Col>
+                </Row>
+                <Row>
+                    <Col span={4}>
+                        <p>Hard Level: </p>
+                    </Col>
+                    <Col span={10}>
+                        <Select defaultValue={presentHardLevel.id} style={{ width: "100%" }} onChange={handleChangeHardLevel}>
+                            <OptGroup label="Basic Levels">
+                                {
+                                    props.basicHardLevelList?.map((item) => {
+                                        return <Option value={item.id} key={item.id}>{item.name}</Option>
+                                    })
+                                }
+                            </OptGroup>
+                            {
+                                customHardLevelList ?
+                                    <OptGroup label="Custom Levels">
+                                        {
+                                            customHardLevelList?.map((item) => {
+                                                return <Option value={item.id} key={item.id}>{item.name}</Option>
+                                            })
+                                        }
+                                    </OptGroup> : ''
+                            }
+                        </Select>
+                    </Col>
+                    <Col span={2}>
+                        <CustomPage customHardLevelList={customHardLevelList} onOK={onSaveCustomHardLevel} />
                     </Col>
                 </Row>
             </Modal>

@@ -15,6 +15,8 @@ import Display from './Display';
 import StartButton from './StartButton';
 import LoginPage from './collectionsPage/LoginPage';
 import OptionPage from './OptionPage';
+import HistoryListPage from './collectionsPage/HistoryListPage';
+
 const TetrisOnline = () => {
     const localStageWidth = parseInt(localStorage.getItem('stageWidth')) || 12;
     const localStageHeight = parseInt(localStorage.getItem('stageHeight')) || 20;
@@ -178,8 +180,9 @@ const TetrisOnline = () => {
                     <StartButton callback={startGame} />
                     <LoginPage callback={onSuccess} />
                     {
-                        user ? <h1 style={{ color: "white" }}>Da thanh cong</h1> : ''
+                        user ? <p style={{ color: "white" }}>DN thanh cong</p> : ''
                     }
+                    <HistoryListPage userId={user._id} />
                 </aside>
             </StyledTetris>
         </StyledTetrisWrapper>

@@ -100,17 +100,32 @@ router.route('/:id/history').get(async (req, res) => {
         const data = await historyModel.findOne({ userId: id });
 
         if (data) {
-            const his = data.histories;
+            const his = await data.histories.sort((a, b) => helpers.parseDateTime(b.time) - helpers.parseDateTime(a.time));
             res.send(his);
         }
         else {
-            res.status(401).send({ message: "No history!" });
+            res.send([]);
         }
     } catch (error) {
         console.log(error);
         res.status(500).send({ message: "Error in server" });
     }
 });
+router.route('/:id/history').delete(async (req, res) => {
+    try {
+        const userId = req.params.id;
+        const result = await historyModel.deleteOne({ userId: userId });
+        if (result.deletedCount > 0) {
+            res.send({ message: "Delete history successfully !" });
+        }
+        else {
+            res.status(401).send({ message: "Failed to delete! Please try later!" });
+        }
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ message: "Failed to delete! Please try later!" });
+    }
+})
 
 router.route('/:id/history/add').post(async (req, res) => {
     try {

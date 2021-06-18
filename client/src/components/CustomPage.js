@@ -35,7 +35,7 @@ const CustomPage = (props) => {
             </Tooltip>
 
             <Modal title="Customize Hard Levels" visible={isModalVisible}
-                onOk={handleOk} onCancel={handleCancel} width={"60%"}>
+                onOk={handleOk} onCancel={handleCancel} width={"60vw"}>
                 <EditableTable customHardLevelList={customHardLevelList} onSave={onSave} />
             </Modal>
         </>

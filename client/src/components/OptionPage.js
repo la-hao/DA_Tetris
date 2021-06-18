@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Modal, Button, Row, Slider, Col, Select } from 'antd';
+import { Link } from 'react-router-dom';
 import CustomPage from './CustomPage';
 const { Option, OptGroup } = Select;
 
@@ -42,9 +43,9 @@ const OptionPage = (props) => {
         setPresentHardLevelId(value);
     }
 
-    function onSaveCustomHardLevel(value) {
+    function onSaveCustomHardLevel(value) {//value: list
         setCustomHardLevelList(value);
-        setPresentHardLevelId(value.id);
+        //setPresentHardLevelId(value.id);
     }
 
     return (
@@ -53,6 +54,18 @@ const OptionPage = (props) => {
                 Options
             </Button>
             <Modal title="Options" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
+                <Row>
+                    <Col span={6}></Col>
+                    <Col span={12}>
+                        <Button type="success" shape="round" block>
+                            <Link to="/online"><b>PLAY ONLINE</b></Link>
+                        </Button>
+                    </Col>
+                    <Col span={6}></Col>
+                </Row>
+                <Row>
+                    <h1></h1>
+                </Row>
                 <Row>
                     <Col span={4}>
                         <p>Width: {width}</p>

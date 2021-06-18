@@ -6,6 +6,7 @@ const historyModel = require('../models/history.model');
 const userService = require('../services/user.service');
 const rankService = require('../services/rank.service');
 const helpers = require('../helpers');
+const { generateToken } = require('../utils');
 
 // router.route('/').get(async (req, res) => {
 //     try {
@@ -77,7 +78,7 @@ router.route('/signin').post(async (req, res) => {
                 const response = {
                     username: user.username,
                     _id: user._id,
-                    token: ''// Lam sau
+                    token: generateToken(user),
                 }
                 res.send(response);
             } else {

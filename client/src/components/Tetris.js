@@ -13,7 +13,6 @@ import { useGameStatus } from '../hooks/useGameStatus';
 import Stage from './Stage';
 import Display from './Display';
 import StartButton from './StartButton';
-import CollectionsPage from './CollectionsPage';
 import OptionPage from './OptionPage';
 
 const Tetris = () => {

@@ -22,6 +22,7 @@ const CustomPage = (props) => {
     };
 
     const onSave = (list) => {
+        localStorage.setItem('customHardLevelList', JSON.stringify(list));
         setCustomHardLevelList(list);
         props.onOK(list);
     }

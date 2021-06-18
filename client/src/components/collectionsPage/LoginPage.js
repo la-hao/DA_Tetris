@@ -2,16 +2,18 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 //Adding antd modules and style
-import { Button, Modal, Form, Input, Alert, message } from 'antd';
+import { Button, Modal, Form, Input, Alert, message as showMessage } from 'antd';
 import "antd/dist/antd.css";
+import { BASE_URL } from '../../constants';
+import RegisterPage from './RegisterPage';
 
-const CollectionCreateForm = ({ visible, onCreate, onCancel, message, isLogin }) => {
+const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
     const [form] = Form.useForm();
     const displayMessage = message ? "block" : "none";
     return (
         <Modal
             visible={visible}
-            title={isLogin ? "Login" : "Register"}
+            title="Login"
             okText="Login"
             cancelText="Cancel"
             onCancel={onCancel}
@@ -42,7 +44,7 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel, message, isLogin })
 
                 <Form.Item
                     name="username"
-                    label="User Name"
+                    label="Username"
                     rules={[
                         {
                             required: true,
@@ -62,17 +64,20 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel, message, isLogin })
                 >
                     <Input.Password placeholder="Please input your password!" />
                 </Form.Item>
+                <Form.Item>
+                    <RegisterPage />
+                </Form.Item>
             </Form>
         </Modal>
     );
 };
 
-const success = (text) => {
-    message.success(text, 3);
-};
+// const success = (text, callback) => {
+//     message.success(text, 3);
+//     callback();
+// };
 
-const baseURL = 'http://localhost:3001';
-const CollectionsPage = () => {
+const LoginPage = (props) => {
     const [visible, setVisible] = useState(false);
     const [message, setMessage] = useState('');
 
@@ -83,14 +88,19 @@ const CollectionsPage = () => {
     const onCreate = (values) => {
         console.log('Received values of form: ', values);
 
-        axios.post(baseURL + '/user/signin', {
+        axios.post(BASE_URL + '/user/signin', {
             username: values.username,
             password: values.password
         })
-            .then(function (response) {
+            .then(function (response) {//Thanh cong
                 console.log(response);
                 setVisible(false);
-                success("Log in successfully !");
+                showMessage.success('Login successfully !!', 3);
+                //Luu user vao localStorage
+                const userInfo = response.data;
+                console.log('user', userInfo);
+                localStorage.setItem('user', JSON.stringify(userInfo));
+                props.callback(userInfo);
             })
             .catch(function (error) {
                 console.log(error);
@@ -122,4 +132,4 @@ const CollectionsPage = () => {
     );
 };
 
-export default CollectionsPage;
+export default LoginPage;

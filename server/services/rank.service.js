@@ -1,10 +1,17 @@
 const rankModel = require('../models/rank-board.model');
 const NUMBER_TOP = process.env.NUMBER_TOP || 10;
-
+const helpers = require('../helpers');
 //Lay dsach Top BXH
 exports.getTopRankBoard = async () => {
     const data = await rankModel.find({});
-    const sortData = data.slice().sort(function (a, b) { return (b.score - a.score) });
+    const sortData = data.slice().sort(function (a, b) {
+        const timeA = helpers.parseDateTime(a.time);
+        const timeB = helpers.parseDateTime(b.time);
+
+        if (b.score > a.score) return 1;
+        if (b.score == a.score && timeB < timeA) return 1;
+        else return -1;
+    });
     let list = [];
     data.map(member => {
         const item = {
@@ -15,7 +22,9 @@ exports.getTopRankBoard = async () => {
         list.push(item);
     })
     //console.log('list:', list);
-    return await list.sort(function (a, b) { return (a.rank - b.rank) });
+    return await list.sort(function (a, b) {
+        return (a.rank - b.rank)
+    });
 };
 
 //Kiem tra co the cap nhat BXH hay ko
@@ -39,7 +48,8 @@ exports.updateRankBoard = async (user) => {
         if (!mem) {//Neu chua co tren BXH  them vao
             const newMem = {
                 username: user.username,
-                score: user.highestScore
+                score: user.highestScore,
+                time: helpers.getDateTime()
             }
             if (data.length < NUMBER_TOP) {//Neu BXH duoi 10 nguoi thi chi can them vao
                 await rankModel(newMem).save();
@@ -52,7 +62,7 @@ exports.updateRankBoard = async (user) => {
                 return;
             }
         } else {//Da ton tai tren BXH thi cap nhat lai diem tren BXH
-            await rankModel.findOneAndUpdate({ username: user.username }, { $set: { score: user.highestScore } });
+            await rankModel.findOneAndUpdate({ username: user.username }, { $set: { score: user.highestScore, time: helpers.getDateTime() } });
         }
     } catch (error) {
         console.log(error);

@@ -8,7 +8,7 @@ const HistoryListPage = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [data, setData] = useState([]);
 
-    console.log("userId HisPage", props.userId);
+
 
     useEffect(() => {
         const getData = () => {
@@ -19,7 +19,8 @@ const HistoryListPage = (props) => {
             ;
         }
         getData();
-    }, [props.userId, isModalVisible, setIsModalVisible]);
+        console.log("userId HisPage", props.userId);
+    }, [isModalVisible, setIsModalVisible]);
 
     const showModal = () => {
         setIsModalVisible(true);
@@ -52,9 +53,9 @@ const HistoryListPage = (props) => {
 
     return (
         <>
-            <Button type="link" onClick={showModal}>
+            <a onClick={showModal}>
                 View history
-            </Button>
+            </a>
             <Modal title="Your Histories" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <div className="demo-infinite-container" style={{ height: "40vh", overflow: "auto" }}>
 

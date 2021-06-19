@@ -12,11 +12,12 @@ import { useGameStatus } from '../hooks/useGameStatus';
 // Components
 import Stage from './Stage';
 import Display from './Display';
-import StartButton from './StartButton';
+import Button from './Button';
 import LoginPage from './collectionsPage/LoginPage';
-import OptionPage from './OptionPage';
-import HistoryListPage from './collectionsPage/HistoryListPage';
-
+import OptionOnlinePage from './collectionsPage/OptionOnlinePage';
+import ProfileMenu from './collectionsPage/ProfileMenu';
+import DisabledProfile from './collectionsPage/DisabledProfile';
+import RankBoard from './collectionsPage/RankBoard';
 const TetrisOnline = () => {
     const localStageWidth = parseInt(localStorage.getItem('stageWidth')) || 12;
     const localStageHeight = parseInt(localStorage.getItem('stageHeight')) || 20;
@@ -58,25 +59,12 @@ const TetrisOnline = () => {
     }, [stageWidth, stageHeight, presentHardLevel, setPresentHardLevel, customHardLevelList, setCustomHardLevelList]);
 
     //Change Size Stage
-    const changeOptions = async (width, height, hardLevelId, newCustomHardLevelList) => {
+    const changeOptions = async (width, height) => {
         setstageWidth(width);
         setstageHeight(height);
 
         localStorage.setItem('stageWidth', width);
         localStorage.setItem('stageHeight', height);
-
-        if (newCustomHardLevelList) {
-            setCustomHardLevelList(newCustomHardLevelList);
-            localStorage.setItem('customHardLevelList', JSON.stringify(newCustomHardLevelList));
-        }
-
-        const hardLevel = await getHardLevelById(hardLevelId, newCustomHardLevelList, basicHardLevelList);
-        if (hardLevel) {
-            localStorage.setItem('presentHardLevel', JSON.stringify(hardLevel));
-            setPresentHardLevel(hardLevel);
-        }
-
-        console.log("hard:", hardLevel);
     }
 
     const movePlayer = dir => {
@@ -84,16 +72,6 @@ const TetrisOnline = () => {
             updatePlayerPos({ x: dir, y: 0 });
         }
     };
-
-    // const keyUp = ({ keyCode }) => {
-    //   if (!gameOver) {
-    //     // Activate the interval again when user releases down arrow.
-    //     if (keyCode === 40) {
-    //       setDropTime(1000 / (level + 1));
-    //     }
-    //   }
-    // };
-
 
     const startGame = () => {
         // Reset everything
@@ -155,7 +133,13 @@ const TetrisOnline = () => {
 
     const onSuccess = (user) => {
         setUser(user);
+        localStorage.setItem('user', JSON.stringify(user));
         console.log('getUser from login', user);
+    }
+
+    const handleLogOut = () => {
+        setUser(null);
+        localStorage.removeItem('user');
     }
 
     return (
@@ -166,6 +150,17 @@ const TetrisOnline = () => {
         //onKeyUp={keyUp}
         >
             <StyledTetris>
+                <aside>
+                    {user ?
+                        <ProfileMenu
+                            userId={user._id}
+                            onLogOut={() => handleLogOut()}
+                            username={user.username}
+                        />
+                        : <DisabledProfile />
+                    }
+                    <RankBoard gameOver={gameOver} />
+                </aside>
                 <Stage stage={stage} />
                 <aside>
                     {gameOver ? (
@@ -177,12 +172,17 @@ const TetrisOnline = () => {
                             <Display text={`Level: ${level + 1}`} />
                         </div>
                     )}
-                    <StartButton callback={startGame} />
-                    <LoginPage callback={onSuccess} />
+                    <OptionOnlinePage stageWidth={stageWidth} stageHeight={stageHeight} onOK={changeOptions}
+                    />
+                    {/* <HistoryListPage userId={user._id} /> */}
                     {
-                        user ? <p style={{ color: "white" }}>DN thanh cong</p> : ''
+                        user ?
+                            <>
+                                <Button callback={startGame} text="Start Game" />
+                            </> :
+                            <LoginPage callback={onSuccess} />
                     }
-                    <HistoryListPage userId={user._id} />
+
                 </aside>
             </StyledTetris>
         </StyledTetrisWrapper>

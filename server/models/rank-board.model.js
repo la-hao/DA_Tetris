@@ -4,6 +4,7 @@ const { Schema } = mongoose;
 const rankBoardSchema = new Schema({
     username: String,
     score: Number,
+    time: String,
 
 }, { collection: "rank" });
 

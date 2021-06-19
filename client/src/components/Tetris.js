@@ -12,7 +12,7 @@ import { useGameStatus } from '../hooks/useGameStatus';
 // Components
 import Stage from './Stage';
 import Display from './Display';
-import StartButton from './StartButton';
+import Button from './Button';
 import OptionPage from './OptionPage';
 
 const Tetris = () => {
@@ -165,7 +165,7 @@ const Tetris = () => {
               <Display text={`Level: ${level + 1}`} />
             </div>
           )}
-          <StartButton callback={startGame} />
+          <Button callback={startGame} text="Start Game" />
           {/* <CollectionsPage /> */}
           <OptionPage stageWidth={stageWidth} stageHeight={stageHeight} onOK={changeOptions}
             basicHardLevelList={basicHardLevelList} presentHardLevel={presentHardLevel}

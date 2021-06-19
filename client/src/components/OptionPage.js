@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, Row, Slider, Col, Select } from 'antd';
+import { Modal, Row, Slider, Col, Select, Button as ButtonAntd } from 'antd';
 import { Link } from 'react-router-dom';
 import CustomPage from './CustomPage';
+import Button from './Button';
 const { Option, OptGroup } = Select;
 
 const OptionPage = (props) => {
@@ -50,16 +51,14 @@ const OptionPage = (props) => {
 
     return (
         <>
-            <Button type="primary" onClick={showModal}>
-                Options
-            </Button>
+            <Button text="Option" callback={() => showModal()} />
             <Modal title="Options" visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}>
                 <Row>
                     <Col span={6}></Col>
                     <Col span={12}>
-                        <Button type="success" shape="round" block>
+                        <ButtonAntd type="success" shape="round" block>
                             <Link to="/online"><b>PLAY ONLINE</b></Link>
-                        </Button>
+                        </ButtonAntd>
                     </Col>
                     <Col span={6}></Col>
                 </Row>

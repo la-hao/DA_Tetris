@@ -2,10 +2,11 @@ import { useEffect, useState } from 'react';
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
 //Adding antd modules and style
-import { Button, Modal, Form, Input, Alert, message as showMessage } from 'antd';
+import { Modal, Form, Input, Alert, message as showMessage } from 'antd';
 import "antd/dist/antd.css";
 import { BASE_URL } from '../../constants';
 import RegisterPage from './RegisterPage';
+import Button from '../Button';
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
     const [form] = Form.useForm();
@@ -99,7 +100,7 @@ const LoginPage = (props) => {
                 //Luu user vao localStorage
                 const userInfo = response.data;
                 console.log('user', userInfo);
-                localStorage.setItem('user', JSON.stringify(userInfo));
+                //localStorage.setItem('user', JSON.stringify(userInfo));
                 props.callback(userInfo);
             })
             .catch(function (error) {
@@ -113,13 +114,11 @@ const LoginPage = (props) => {
     return (
         <div>
             <Button
-                type="primary"
-                onClick={() => {
+                text="Login"
+                callback={() => {
                     setVisible(true);
                 }}
-            >
-                Login
-            </Button>
+            />
             <CollectionCreateForm
                 visible={visible}
                 onCreate={onCreate}

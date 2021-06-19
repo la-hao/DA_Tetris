@@ -31,3 +31,37 @@
     transform: rotate(360deg);
   }
 }
+
+::-webkit-scrollbar {
+width: 0px;}
+
+.rank-num{ 
+  color: yellow;
+  margin-right: 10px; 
+  font-size: 1rem;
+  margin-top: 40px ;
+}
+
+.rank-username{
+  max-height: 40px;
+  font-size: 0.8rem;
+  max-width: 60px;
+}
+
+.rank-score{
+  color: #999;
+  font-size: 0.8rem;
+  max-width: 70px;
+}
+
+.rank-board{
+  font-size: 1rem;
+  color: white;
+  margin-bottom: 0px;
+}
+
+p.breakline{
+  display: block;
+  margin-top: 4px;
+  margin-bottom: 0px;
+}

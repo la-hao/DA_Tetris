@@ -1,9 +1,7 @@
+import { Button as ButtonAntd, Col, Modal, Row, Select, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Modal, Row, Slider, Col, Select, Button as ButtonAntd } from 'antd';
 import { Link } from 'react-router-dom';
-import CustomPage from '../CustomPage';
 import Button from '../Button';
-const { Option, OptGroup } = Select;
 
 const OptionPage = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);

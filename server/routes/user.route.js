@@ -78,6 +78,7 @@ router.route('/signin').post(async (req, res) => {
                 const response = {
                     username: user.username,
                     _id: user._id,
+                    highestScore: user.highestScore,
                     token: generateToken(user),
                 }
                 res.send(response);

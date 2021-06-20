@@ -50,7 +50,7 @@ const cloneData = (data) => {
                 baseSpeed: data[i].baseSpeed,
                 upSpeed: data[i].upSpeed,
                 target: data[i].target,
-                linePoints: data[i].linePoints,//[1000, 4000, 7000],
+                timeLines: data[i].timeLines,//[1000, 4000, 7000],
                 pointPerRow: data[i].pointPerRow,//[200, 250, 300, 350],
             });
         }
@@ -62,7 +62,7 @@ const cloneData = (data) => {
                 baseSpeed: 0,
                 upSpeed: 0,
                 target: 0,
-                linePoints: [],//[1000, 4000, 7000],
+                timeLines: [],//[1000, 4000, 7000],
                 pointPerRow: [],//[200, 250, 300, 350],
             });
         }
@@ -100,9 +100,8 @@ const EditableTable = (props) => {
         await data.map(item => {
             if (item.name != '') {
                 const target = Math.round(parseInt(item.target) * 0.04);
-                const line = Math.round(parseInt(item.target) * 0.08);
-                item.pointPerRow = [target, target + 20, target + 40, target + 60];
-                item.linePoints = [line, line * 3, line * 5];
+                item.pointPerRow = [target, target + 10, target + 20, target + 40, target + 50];
+                item.timeLines = [60, 120, 200, 300];
                 list.push(item);
             }
         });
@@ -204,12 +203,12 @@ const EditableTable = (props) => {
         } else if (col.dataIndex === 'baseSpeed') {
             min = 100;
             max = 1000;
-            step = 20;
+            step = 50;
         }
         else if (col.dataIndex === 'target') {
-            min = 100;
+            min = 1000;
             max = 100000;
-            step = 100;
+            step = 200;
         }
         return {
             ...col,

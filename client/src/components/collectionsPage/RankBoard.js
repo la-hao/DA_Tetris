@@ -32,7 +32,6 @@ const RankBoard = (props) => {
                     pageStart={0}
                     useWindow={false}
                     scrolling="true"
-                    sc
                 >
                     <List
                         itemLayout="horizontal"

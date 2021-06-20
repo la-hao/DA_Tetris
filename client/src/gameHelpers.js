@@ -18,6 +18,12 @@ export const getHardLevelById = (levelId, customHardLevelList, basicHardLevelLis
   }
   return result;
 };
+export const onlineHardLevel = {
+  baseSpeed: 800, //milisecond
+  timeLines: [60, 120, 150, 200, 240, 280, 320, 380, 420],
+  pointPerRow: [30, 40, 50, 60, 70, 80, 90, 100, 110, 120, 130],
+  upSpeed: 85 / 100
+}
 
 export const basicHardLevelList = [
   {
@@ -25,17 +31,17 @@ export const basicHardLevelList = [
     name: "Easy Level",
     baseSpeed: 1000, //milisecond
     target: 1000,
-    linePoints: [200, 400, 600],
-    pointPerRow: [40, 50, 60, 80],
-    upSpeed: 90 / 100
+    timeLines: [60, 120, 150, 200],
+    pointPerRow: [20, 40, 60, 80, 100],
+    upSpeed: 85 / 100
   },
   {
     id: 5,
     name: "Normal Level",
     baseSpeed: 800,
     target: 5000,
-    linePoints: [1000, 2000, 3000],
-    pointPerRow: [100, 120, 140, 160],
+    timeLines: [60, 120, 150, 200],
+    pointPerRow: [40, 60, 80, 100, 120],
     upSpeed: 85 / 100
   },
   {
@@ -43,9 +49,9 @@ export const basicHardLevelList = [
     name: "Heavy Level",
     baseSpeed: 600,
     target: 10000,
-    linePoints: [1000, 4000, 7000],
-    pointPerRow: [200, 250, 300, 350],
-    upSpeed: 80 / 100
+    timeLines: [60, 120, 150, 200],
+    pointPerRow: [80, 120, 140, 160, 200],
+    upSpeed: 85 / 100
   }
 ];
 
@@ -53,6 +59,19 @@ export const createStage = (width, height) =>
   Array.from(Array(height), () =>
     new Array(width).fill([0, 'clear']),
   );
+
+export const creatNextTetrominoDisplay = (tetromino) => {
+
+  let stage = createStage(tetromino.length, tetromino[0].length);
+
+  for (let i = 0; i < tetromino.length; i++) {
+    for (let j = 0; j < tetromino[0].length; j++) {
+      stage[i][j] = [tetromino[i][j], 'clear'];
+    }
+  }
+
+  return stage;
+}
 
 export const checkCollision = (player, stage, { x: moveX, y: moveY }) => {
   for (let y = 0; y < player.tetromino.length; y += 1) {

@@ -1,4 +1,4 @@
-require('dotenv').config();
+// require('dotenv').config();
 const path = require('path');
 const express = require('express');
 const cors = require('cors');
@@ -29,8 +29,8 @@ app.get("/api", (req, res) => {
     res.json(data);
 })
 
-app.use('/user', userRouter);
-app.use('/rank-board', rankBoardRouter);
+app.use('/api/user', userRouter);
+app.use('/api/rank-board', rankBoardRouter);
 
 
 //All other GET requests not handled before will return ReactApp

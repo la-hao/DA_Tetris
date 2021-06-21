@@ -94,6 +94,39 @@ router.route('/signin').post(async (req, res) => {
     }
 })
 
+//Doi mat khau
+router.route('/change-password').post(async (req, res) => {
+    try {
+        const username = req.body.username;
+        const currentPassword = req.body.currentPassword;
+        const newPassword = req.body.newPassword;
+
+        const user = await userModel.findOne({ username: username });
+
+        if (!user) {
+            res.status(401).send({ message: "Username does not exist" });
+            return;
+        }
+
+        const hash = user.password;
+        const result = bcrypt.compareSync(currentPassword, hash);
+
+        if (result == true) {
+            const saltRounds = 10;
+            const hashNewPassword = bcrypt.hashSync(newPassword, saltRounds);
+
+            user.password = hashNewPassword;
+            await user.save();
+            res.send({ message: "Change password successfully!!" });
+        }
+        else {
+            res.status(401).send({ message: "Incorrect password!" });
+        }
+    } catch (error) {
+        console.log(error);
+    }
+})
+
 //Lich su nguoi choi
 router.route('/:id/history').get(async (req, res) => {
     try {

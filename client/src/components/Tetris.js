@@ -23,8 +23,7 @@ const Tetris = () => {
 
   //Init game
   const [dropTime, setDropTime] = useState(null);
-  const [isFirsttime, setIsFirsttime] = useState(true);
-  const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(stageWidth);
+  const [player, updatePlayerPos, resetPlayer, playerRotate, initPlayer] = usePlayer(stageWidth);
   const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
 
 
@@ -54,12 +53,7 @@ const Tetris = () => {
   console.log('re-render');
 
   useEffect(() => {
-    if (isFirsttime) {
-      setIsFirsttime(false);
-    }
-    else {
-      startGame();
-    }
+    initGame();
   }, [stageWidth, stageHeight, presentHardLevel, setPresentHardLevel, customHardLevelList, setCustomHardLevelList]);
 
   useEffect(() => {
@@ -101,18 +95,26 @@ const Tetris = () => {
   };
 
   const keyUp = ({ keyCode }) => {
-    if (!gameOver) {
+    if (!gameOver && isPlaying) {
       // Activate the interval again when user releases down arrow.
       if (keyCode === 40) {
         setDropTime(currentDropTime);
       }
     }
   };
+  const initGame = () => {
+    setStage(createStage(stageWidth, stageHeight));
+    setGameOver(false);
+    setIsPlaying(false);
+    setIsPaused(false);
+    setDropTime(null);
+    initPlayer();
+    setScore(0);
+  }
 
   const startGame = () => {
-    // Reset everything
+    //Reset
     setStage(createStage(stageWidth, stageHeight));
-
     //Droptime
     setDropTime(presentHardLevel.baseSpeed);
     setCurrentDropTime(presentHardLevel.baseSpeed)
@@ -205,17 +207,18 @@ const Tetris = () => {
   }
 
   const move = ({ keyCode }) => {
-    if (!gameOver && !isPaused) {
-      if (keyCode === 37) {
+    if (!gameOver && isPlaying) {
+      if (keyCode === 37 || keyCode === 65) {
         movePlayer(-1);
-      } else if (keyCode === 39) {
+      } else if (keyCode === 39 || keyCode === 68) {
         movePlayer(1);
-      } else if (keyCode === 40) {
-        dropPlayer();
-      } else if (keyCode === 38) {
+      } else if (keyCode === 40 || keyCode === 83) {
+        //dropPlayer();
+        drop();
+      } else if (keyCode === 38 || keyCode === 87) {
         playerRotate(stage, 1);
       }
-      else if (keyCode === 71) {//G: Giam speed
+      else if (keyCode === 71 || keyCode === 32) {//G: Giam speed
         downSpeed();
       }//test
       // else if (keyCode === 32) {//Tang score

@@ -14,6 +14,16 @@ export const usePlayer = (STAGE_WIDTH) => {
     collided: false,
   });
 
+  const initPlayer = () => {
+    setPlayer(
+      {
+        tetromino: TETROMINOS[0].shape,
+        nextTetromino: nextTetromino,
+        collided: false,
+      }
+    )
+  }
+
   const rotate = (matrix, dir) => {
     // Make the rows to become cols (transpose)
     const rotatedTetro = matrix.map((_, index) =>
@@ -63,5 +73,5 @@ export const usePlayer = (STAGE_WIDTH) => {
     presentTetromino.current = nextTetrominoValue;
   }, [STAGE_WIDTH]);
 
-  return [player, updatePlayerPos, resetPlayer, playerRotate];
+  return [player, updatePlayerPos, resetPlayer, playerRotate, initPlayer];
 };

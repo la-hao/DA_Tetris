@@ -25,11 +25,10 @@ const TetrisOnline = () => {
     //Set game
     const stageHeight = STAGE_HEIGHT;
     const stageWidth = STAGE_WIDTH;
-    const [player, updatePlayerPos, resetPlayer, playerRotate] = usePlayer(stageWidth);
+    const [player, updatePlayerPos, resetPlayer, playerRotate, initPlayer] = usePlayer(stageWidth);
     const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
 
     //Init game
-    const [isFirsttime, setIsFirsttime] = useState(true);
     const [presentHardLevel, setPresentHardLevel] = useState(onlineHardLevel);
     const [score, setScore, level, setLevel] = useGameStatus(
         rowsCleared, presentHardLevel);
@@ -63,19 +62,24 @@ const TetrisOnline = () => {
     }, [isPlaying, setIsPlaying]);
 
     useEffect(() => {
-        if (isFirsttime) {
-            setIsFirsttime(false);
-        }
-        else {
-            startGame();
-        }
-    }, [stageWidth, stageHeight, presentHardLevel, setPresentHardLevel]);
+        initGame();
+    }, [stageWidth, stageHeight, presentHardLevel, setPresentHardLevel, user]);
 
     const movePlayer = dir => {
         if (!checkCollision(player, stage, { x: dir, y: 0 })) {
             updatePlayerPos({ x: dir, y: 0 });
         }
     };
+
+    const initGame = () => {
+        setStage(createStage(stageWidth, stageHeight));
+        setGameOver(false);
+        setIsPlaying(false);
+        setIsPaused(false);
+        setDropTime(null);
+        initPlayer();
+        setScore(0);
+    }
 
     const startGame = () => {
         // Reset everything
@@ -111,12 +115,15 @@ const TetrisOnline = () => {
             updatePlayerPos({ x: 0, y: 1, collided: false });
         } else {
             // Game over!
-            if (player.pos.y < 1) {
+            if (player.pos.y < 1 || !user) {
                 console.log('GAME OVER!!!');
                 setGameOver(true);
                 setIsPlaying(false);
                 setDropTime(null);
-                saveHistory(user._id, score);
+
+                if (user) {
+                    saveHistory(user._id, score);
+                }
             }
             updatePlayerPos({ x: 0, y: 0, collided: true });
         }
@@ -159,17 +166,18 @@ const TetrisOnline = () => {
     }
 
     const move = ({ keyCode }) => {
-        if (!gameOver) {
-            if (keyCode === 37) {
+        if (!gameOver && isPlaying) {
+            if (keyCode === 37 || keyCode === 65) {
                 movePlayer(-1);
-            } else if (keyCode === 39) {
+            } else if (keyCode === 39 || keyCode === 68) {
                 movePlayer(1);
-            } else if (keyCode === 40) {
-                dropPlayer();
-            } else if (keyCode === 38) {
+            } else if (keyCode === 40 || keyCode === 83) {
+                //dropPlayer();
+                drop();
+            } else if (keyCode === 38 || keyCode === 87) {
                 playerRotate(stage, 1);
             }
-            else if (keyCode === 71) {//G: Giam speed
+            else if (keyCode === 71 || keyCode === 32) {//G: Giam speed
                 downSpeed();
             }//test
             // else if (keyCode === 32) {//Tang score
@@ -182,7 +190,7 @@ const TetrisOnline = () => {
     };
 
     const keyUp = ({ keyCode }) => {
-        if (!gameOver) {
+        if (!gameOver && isPlaying) {
             // Activate the interval again when user releases down arrow.
             if (keyCode === 40) {
                 setDropTime(currentDropTime);

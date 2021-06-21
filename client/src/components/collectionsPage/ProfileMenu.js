@@ -1,13 +1,14 @@
-import { Menu, Dropdown, Avatar, Row } from 'antd';
-import { CaretDownFilled, LogoutOutlined } from '@ant-design/icons';
-import HistoryListPage from './HistoryListPage';
+import { CaretDownFilled } from '@ant-design/icons';
+import { Avatar, Dropdown, Menu, Row } from 'antd';
 import { StyledDisplay } from '../styles/StyledDisplay';
+import ChangePasswordPage from './ChangePasswordPage';
+import HistoryListPage from './HistoryListPage';
 
 const ProfileMenu = (props) => {
     const menu = (
         <Menu>
             <Menu.Item key="0">
-                <a>Change password</a>
+                <ChangePasswordPage username={props.username} />
             </Menu.Item>
             <Menu.Item key="1">
                 <HistoryListPage userId={props.userId} />

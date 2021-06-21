@@ -1,4 +1,4 @@
-const URI = process.env.DB_URI;
+const URI = process.env.DB_URI || "mongodb+srv://dbuser:meomeo@cluster0.br4qf.mongodb.net/tetris_database?retryWrites=true&w=majority"
 
 const mongoose = require('mongoose');
 mongoose.set('useFindAndModify', false);

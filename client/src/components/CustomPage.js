@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import { Modal, Button, Tooltip, Row, Col } from 'antd';
 import { SettingOutlined } from '@ant-design/icons';
+import { Button, Modal, Tooltip } from 'antd';
+import React, { useState } from 'react';
+import InfiniteScroll from 'react-infinite-scroller';
 import EditableTable from './EditableTable';
 
 
@@ -26,6 +27,7 @@ const CustomPage = (props) => {
         setCustomHardLevelList(list);
         props.onOK(list);
     }
+
     return (
         <>
             <Tooltip title="Customize">
@@ -34,9 +36,18 @@ const CustomPage = (props) => {
                 </Button>
             </Tooltip>
 
-            <Modal title="Customize Hard Levels" visible={isModalVisible}
-                onOk={handleOk} onCancel={handleCancel} width={"60vw"}>
-                <EditableTable customHardLevelList={customHardLevelList} onSave={onSave} />
+            <Modal title="Customize Hard Levels" visible={isModalVisible} width="60vw"
+                onOk={handleOk} onCancel={handleCancel} style={{ maxWidth: "60vw", minWidth: 300 }} >
+                <div className="demo-infinite-container" style={{ minHeight: 260, maxHeight: "40vh", overflow: "auto" }}>
+
+                    <InfiniteScroll
+                        initialLoad={false}
+                        pageStart={0}
+                        useWindow={false}
+                    >
+                        <EditableTable customHardLevelList={customHardLevelList} onSave={onSave} />
+                    </InfiniteScroll>
+                </div>
             </Modal>
         </>
     );

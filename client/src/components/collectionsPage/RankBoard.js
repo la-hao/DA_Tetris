@@ -1,13 +1,14 @@
-import { List, Row, Col } from 'antd';
-import InfiniteScroll from 'react-infinite-scroller';
+import { Col, List, Row } from 'antd';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import { StyledRankBoard } from '../styles/StyledRankBoard';
 import React, { useEffect, useState } from 'react';
-import '../../App.css'
+import InfiniteScroll from 'react-infinite-scroller';
+import '../../App.css';
 import { BASE_URL } from '../../constants';
+import { StyledRankBoard } from '../styles/StyledRankBoard';
 
 const RankBoard = (props) => {
     const [data, setData] = useState([]);
+
     useEffect(() => {
         const getData = async () => {
             try {
@@ -38,35 +39,34 @@ const RankBoard = (props) => {
                         dataSource={data}
                         renderItem={item => (
                             <List.Item>
-                                <Row>
-                                    <Col span={8} style={{ maxHeight: 40 }}>
-                                        <span className="rank-num"
+                                <Col span={8}>
+                                    <span className="rank-num"
+                                        style={{
+                                            color: item.rank < 4 ?
+                                                item.rank < 3 ?
+                                                    item.rank < 2 ?
+                                                        "#faad14" : "gold" : "yellow" : "#ddd"
+                                        }}
+                                    >{item.rank}</span>
+                                </Col>
+                                <Col span={16}>
+                                    <Row style={{ maxHeight: 40, fontSize: "0.8rem" }}>
+                                        <span
                                             style={{
                                                 color: item.rank < 4 ?
                                                     item.rank < 3 ?
                                                         item.rank < 2 ?
                                                             "#faad14" : "gold" : "yellow" : "#ddd"
                                             }}
-                                        >{item.rank}</span>
-                                    </Col>
-                                    <Col span={16}>
-                                        <Row style={{ maxHeight: 40, fontSize: "0.8rem" }}>
-                                            <span
-                                                style={{
-                                                    color: item.rank < 4 ?
-                                                        item.rank < 3 ?
-                                                            item.rank < 2 ?
-                                                                "#faad14" : "gold" : "yellow" : "#ddd"
-                                                }}
-                                            >
-                                                {item.username}
-                                            </span>
-                                        </Row>
-                                        <Row>
-                                            <span className="rank-score">{item.score}</span>
-                                        </Row>
-                                    </Col>
-                                </Row>
+                                        >
+                                            {item.username}
+                                        </span>
+                                    </Row>
+                                    <Row>
+                                        <span className="rank-score">{item.score}</span>
+                                    </Row>
+                                </Col>
+
                             </List.Item>
                         )}
                     />

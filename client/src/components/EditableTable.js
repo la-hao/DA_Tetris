@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { Table, Input, InputNumber, Popconfirm, Form, Typography } from 'antd';
+import { Form, Input, InputNumber, Popconfirm, Table, Typography } from 'antd';
+import React, { useState } from 'react';
 
 const EditableCell = ({
     editing,

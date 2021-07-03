@@ -1,12 +1,8 @@
 import React from 'react';
-import Tetris from './components/Tetris';
 import {
-  BrowserRouter as Router,
-  Switch,
-  Route,
-  Link,
-  Redirect
+  BrowserRouter as Router, Redirect, Route, Switch
 } from "react-router-dom";
+import Tetris from './components/Tetris';
 import TetrisOnline from './components/TetrisOnline';
 
 const App = () => {

@@ -1,16 +1,17 @@
-import { useEffect, useState } from 'react';
+//Adding antd modules and style
+import { Alert, Form, Input, message as showMessage, Modal } from 'antd';
+import "antd/dist/antd.css";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-//Adding antd modules and style
-import { Modal, Form, Input, Alert, message as showMessage } from 'antd';
-import "antd/dist/antd.css";
+import { useEffect, useState } from 'react';
 import { BASE_URL } from '../../constants';
-import RegisterPage from './RegisterPage';
 import Button from '../Button';
+import RegisterPage from './RegisterPage';
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
     const [form] = Form.useForm();
     const displayMessage = message ? "block" : "none";
+
     return (
         <Modal
             visible={visible}
@@ -72,11 +73,6 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
         </Modal>
     );
 };
-
-// const success = (text, callback) => {
-//     message.success(text, 3);
-//     callback();
-// };
 
 const LoginPage = (props) => {
     const [visible, setVisible] = useState(false);

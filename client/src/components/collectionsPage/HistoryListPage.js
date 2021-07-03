@@ -1,14 +1,12 @@
+import { Avatar, Button, List, message, Modal, Popconfirm } from 'antd';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Modal, Button, List, Avatar, message, Popconfirm } from 'antd';
 import InfiniteScroll from 'react-infinite-scroller';
 import { BASE_URL } from '../../constants';
-import axios from 'axios';
 
 const HistoryListPage = (props) => {
     const [isModalVisible, setIsModalVisible] = useState(false);
     const [data, setData] = useState([]);
-
-
 
     useEffect(() => {
         const getData = () => {

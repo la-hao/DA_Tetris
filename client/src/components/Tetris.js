@@ -1,6 +1,6 @@
 import { message } from 'antd';
 import React, { useEffect, useRef, useState } from 'react';
-import { basicHardLevelList, checkCollision, createStage, getHardLevelById } from '../gameHelpers';
+import { basicHardLevelList, checkCollision, createStage, createStageHardLevel, getHardLevelById } from '../gameHelpers';
 import { useGameStatus } from '../hooks/useGameStatus';
 // Custom Hooks
 import { useInterval } from '../hooks/useInterval';
@@ -21,12 +21,6 @@ const Tetris = () => {
   const [stageWidth, setstageWidth] = useState(localStageWidth);
   const [stageHeight, setstageHeight] = useState(localStageHeight);
 
-  //Init game
-  const [dropTime, setDropTime] = useState(null);
-  const [player, updatePlayerPos, resetPlayer, playerRotate, initPlayer] = usePlayer(stageWidth);
-  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
-
-
   //Init hard levels
   const localPresentHardLevel = localStorage.getItem('presentHardLevel') ?
     JSON.parse(localStorage.getItem('presentHardLevel')) : basicHardLevelList[0];
@@ -36,6 +30,12 @@ const Tetris = () => {
     JSON.parse(localStorage.getItem('customHardLevelList')) : [];
   const [customHardLevelList, setCustomHardLevelList] = useState(localCustomHardLevelList);
 
+  //Init game
+  const [dropTime, setDropTime] = useState(null);
+  const [player, updatePlayerPos, resetPlayer, playerRotate, initPlayer] = usePlayer(stageWidth);
+  const [stage, setStage, rowsCleared] = useStage(player, resetPlayer, stageWidth, stageHeight);
+
+  console.log("Stage Set", stage);
   // Score
   const [score, setScore, level, setLevel] = useGameStatus(rowsCleared, presentHardLevel);
   const [currentDropTime, setCurrentDropTime] = useState(presentHardLevel.baseSpeed);
@@ -262,7 +262,7 @@ const Tetris = () => {
             ) :
             (
               <div>
-                <NextTetromino tetromino={player.nextTetromino} />
+                {presentHardLevel.id != 6 ? <NextTetromino tetromino={player.nextTetromino} /> : ''}
                 <Display text={`Target: ${presentHardLevel.target}`} />
                 <Display text={`Score: ${score}`} />
                 <Display text={`Level: ${level + 1}`} />

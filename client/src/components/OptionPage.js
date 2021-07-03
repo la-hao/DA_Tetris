@@ -1,8 +1,8 @@
+import { Button as ButtonAntd, Col, Modal, Row, Select, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
-import { Modal, Row, Slider, Col, Select, Button as ButtonAntd } from 'antd';
 import { Link } from 'react-router-dom';
-import CustomPage from './CustomPage';
 import Button from './Button';
+import CustomPage from './CustomPage';
 const { Option, OptGroup } = Select;
 
 const OptionPage = (props) => {
@@ -57,7 +57,7 @@ const OptionPage = (props) => {
                     <Col span={6}></Col>
                     <Col span={12}>
                         <ButtonAntd type="success" shape="round" block>
-                            <Link to="/online"><b>PLAY ONLINE</b></Link>
+                            <Link to="/online" style={{ textDecoration: "none" }}><b>PLAY ONLINE</b></Link>
                         </ButtonAntd>
                     </Col>
                     <Col span={6}></Col>

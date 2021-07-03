@@ -1,4 +1,4 @@
-import { Button as ButtonAntd, Col, Modal, Row, Select, Slider } from 'antd';
+import { Button as ButtonAntd, Col, Modal, Row, Slider } from 'antd';
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import Button from '../Button';
@@ -8,9 +8,6 @@ const OptionPage = (props) => {
     const [width, setWidth] = useState(props.stageWidth);
     const [height, setHeight] = useState(props.stageHeight);
 
-    useEffect(() => {
-
-    });
     const showModal = () => {
         setIsModalVisible(true);
     };
@@ -24,8 +21,7 @@ const OptionPage = (props) => {
         setIsModalVisible(false);
     };
 
-    //Change width
-
+    //Change size
     function onAfterChangeWidth(value) {
         setWidth(value);
     }
@@ -33,7 +29,6 @@ const OptionPage = (props) => {
     function onAfterChangeHeight(value) {
         setHeight(value);
     }
-
 
     return (
         <>

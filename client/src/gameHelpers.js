@@ -1,4 +1,7 @@
 // export const STAGE_WIDTH = 12;
+
+import { randomTetromino } from "./tetrominos";
+
 // export const STAGE_HEIGHT = 20;
 export const getHardLevelById = (levelId, customHardLevelList, basicHardLevelList) => {
   let result = null;
@@ -18,6 +21,7 @@ export const getHardLevelById = (levelId, customHardLevelList, basicHardLevelLis
   }
   return result;
 };
+
 export const onlineHardLevel = {
   baseSpeed: 800, //milisecond
   timeLines: [60, 120, 150, 200, 240, 280, 320, 380, 420],
@@ -55,10 +59,41 @@ export const basicHardLevelList = [
   }
 ];
 
+// const randomCellInStage = (width, height, rowNumber) => {
+//   let stage = createStage(width, height);
+
+//   for (let i = height - 1 - rowNumber; i <= height - 1; i++) {
+//     for (let j = 0; j < width; j++) {
+//       const tetromino = randomTetromino().shape;
+//       stage[i][j] = [tetromino[1][0], 'clear'];
+//     }
+//   }
+//   console.log("stageCell", stage)
+//   return stage;
+// }
+
 export const createStage = (width, height) =>
   Array.from(Array(height), () =>
     new Array(width).fill([0, 'clear']),
   );
+
+// export const createStageHardLevel = (width, height, hardLevelId) => {
+//   let stage;
+//   console.log("hard Id", hardLevelId);
+//   switch (hardLevelId) {
+//     case 4://Normal
+//       stage = randomCellInStage(width, height, 2);
+//       break;
+//     case 5:
+//       stage = randomCellInStage(width, height, 4);
+//       break;
+//     default:
+//       stage = createStage(width, height);
+//       break;
+//   }
+//   console.log("Stage Helper", stage);
+//   return stage;
+// }
 
 export const creatNextTetrominoDisplay = (tetromino) => {
 

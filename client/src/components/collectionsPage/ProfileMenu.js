@@ -21,7 +21,7 @@ const ProfileMenu = (props) => {
     return (
         <StyledDisplay className="justify-content-center">
             <Dropdown overlay={menu} trigger={['click']}>
-                <a className="ant-dropdown-link " onClick={e => e.preventDefault()}>
+                <a className="ant-dropdown-link " onClick={e => e.preventDefault()} style={{ textDecoration: "none" }}>
                     <Row className="justify-content-center">
                         <Avatar src="https://zos.alipayobjects.com/rmsportal/ODTLcjxAfvqbxHnVXCYX.png" /></Row>
                     <Row className="justify-content-center">

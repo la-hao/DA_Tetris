@@ -1,14 +1,15 @@
-import { useEffect, useState } from 'react';
+//Adding antd modules and style
+import { Alert, Form, Input, message as showMessage, Modal } from 'antd';
+import "antd/dist/antd.css";
 import axios from 'axios';
 import 'bootstrap/dist/css/bootstrap.min.css';
-//Adding antd modules and style
-import { Button, Modal, Form, Input, Alert, message as showMessage } from 'antd';
-import "antd/dist/antd.css";
+import { useEffect, useState } from 'react';
 import { BASE_URL } from '../../constants';
 
 const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
     const [form] = Form.useForm();
     const displayMessage = message ? "block" : "none";
+
     return (
         <Modal
             visible={visible}
@@ -77,11 +78,6 @@ const CollectionCreateForm = ({ visible, onCreate, onCancel, message }) => {
     );
 };
 
-// const success = (text, callback) => {
-//     message.success(text, 3);
-//     callback();
-// };
-
 const ChangePasswordPage = (props) => {
     const [visible, setVisible] = useState(false);
     const [message, setMessage] = useState('');
@@ -106,11 +102,6 @@ const ChangePasswordPage = (props) => {
                 console.log(response);
                 setVisible(false);
                 showMessage.success('Change your password successfully !!', 3);
-                //Luu user vao localStorage
-                // const userInfo = response.data;
-                // console.log('user', userInfo);
-                // localStorage.setItem('user', JSON.stringify(userInfo));
-                // props.callback(userInfo);
             })
             .catch(function (error) {
                 console.log(error);
